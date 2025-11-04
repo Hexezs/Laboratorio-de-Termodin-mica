@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="dark" />
+<title>Laboratorio de Termodinámica</title>
+<style>
+  :root{
+    --bg:#0a0b0d;
+    --ink:#e9eef6;
+    --muted:#9dadc2;
+    --card:#0f1217;
+    --edge:#1a2230;
+    --accent:#6be0ff;
+    --accent-2:#9ef5c2;
+    --ring: rgba(107,224,255,.35);
+    --radius:18px;
+    --shadow: 0 16px 40px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font: 15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    letter-spacing:.2px;
+  }
+
+  header{max-width:1200px; margin:28px auto 8px; padding:0 16px}
+  h1{margin:0; font-size: clamp(22px,3vw,34px); letter-spacing:.4px}
+  .sub{color:var(--muted); margin-top:6px}
+
+  /* Tabs */
+  .tabs{
+    max-width:1200px; margin:18px auto 0; padding:0 16px;
+    display:flex; gap:10px; position:relative; flex-wrap:wrap;
+  }
+  .tab-btn{
+    appearance:none; background:var(--card); color:var(--ink);
+    border:1px solid var(--edge); border-radius:12px; cursor:pointer;
+    padding:10px 14px; font-weight:700; letter-spacing:.3px;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .tab-btn:hover{ transform: translateY(-1px); border-color:#293242; box-shadow:0 10px 26px rgba(0,0,0,.35) }
+  .tab-btn[aria-selected="true"]{ border-color:var(--accent); box-shadow:0 0 0 6px var(--ring) }
+  .ink{
+    position:absolute; height:3px; background:linear-gradient(90deg, var(--accent), var(--accent-2));
+    bottom:-6px; border-radius:999px; transition:left .25s ease, width .25s ease, opacity .2s ease;
+    box-shadow:0 0 16px rgba(107,224,255,.6);
+  }
+
+  /* Panel contenedor */
+  .wrap{max-width:1200px; margin:18px auto 46px; padding:0 16px}
+  .panel{
+    background:var(--card); border:1px solid var(--edge); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:14px;
+  }
+
+  /* Iframes (apps) */
+  .stage{position:relative}
+  .app{
+    width:100%; border:1px solid #192028; background:#0b0f14;
+    border-radius:14px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
+    display:none; opacity:0; transform: translateY(8px) scale(.985);
+    transition: opacity .25s ease, transform .25s ease;
+  }
+  .app.active{ display:block; opacity:1; transform: translateY(0) scale(1) }
+
+  iframe{
+    width:100%; height:720px; border:0; border-radius:12px;
+    background:#000; display:block;
+  }
+
+  /* Loader sutil mientras carga cada iframe */
+  .loader{
+    position:absolute; inset:12px; pointer-events:none;
+    background:
+      radial-gradient(1200px 1200px at 10% 10%, rgba(255,255,255,.02), transparent 35%),
+      linear-gradient(90deg, rgba(255,255,255,.06) 25%, rgba(255,255,255,.12) 37%, rgba(255,255,255,.06) 63%);
+    background-size: 100% 100%, 400% 100%;
+    border-radius:12px; border:1px dashed #202838;
+    animation: shimmer 1.6s linear infinite;
+    opacity:.6;
+  }
+  .loader.hide{display:none}
+  @keyframes shimmer{0%{background-position:0 0, 0 0}100%{background-position:0 0, 400% 0}}
+
+  footer{
+    max-width:1200px; margin:12px auto 30px; padding:0 16px; color:var(--muted);
+    text-align:center; font-size:13px;
+  }
+  .sig{ display:inline-block; margin-top:8px; padding:8px 12px; border:1px solid var(--edge);
+        border-radius:999px; background:#0f141b }
+</style>
+</head>
+<body>
+<header>
+  <h1>Laboratorio de Termodinámica</h1>
+  <div class="sub">Usa las pestañas para cambiar entre módulos.</div>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Programas">
+  <button class="tab-btn" role="tab" aria-selected="true"   aria-controls="app1" id="tab1">1) Movimiento molecular</button>
+  <button class="tab-btn" role="tab" aria-selected="false"  aria-controls="app2" id="tab2">2) Capacidad calorífica</button>
+  <button class="tab-btn" role="tab" aria-selected="false"  aria-controls="app3" id="tab3">3) Conversiones de temperatura</button>
+  <span class="ink" id="ink" style="left:0;width:0;opacity:0"></span>
+</nav>
+
+<main class="wrap">
+  <section class="panel stage">
+    <!-- App 1 -->
+    <div id="app1" class="app active" role="tabpanel" aria-labelledby="tab1">
+      <div class="loader" id="load1" aria-hidden="true"></div>
+      <iframe src="1.html" title="Simulador de Movimiento Molecular"></iframe>
+    </div>
+
+    <!-- App 2 -->
+    <div id="app2" class="app" role="tabpanel" aria-labelledby="tab2">
+      <div class="loader" id="load2" aria-hidden="true"></div>
+      <iframe src="2.html" title="Simulador de Capacidad Calorífica"></iframe>
+    </div>
+
+    <!-- App 3 -->
+    <div id="app3" class="app" role="tabpanel" aria-labelledby="tab3">
+      <div class="loader" id="load3" aria-hidden="true"></div>
+      <iframe src="3.html" title="Conversiones y Escalas de Temperatura"></iframe>
+    </div>
+  </section>
+</main>
+
+<footer>
+ <br/>
+  <span class="sig">Rafael Moreno Bañaga</span>
+</footer>
+
+<script>
+  // Configuración de pestañas
+  const tabs  = [...document.querySelectorAll('.tab-btn')];
+  const panes = tabs.map(b => document.getElementById(b.getAttribute('aria-controls')));
+  const ink   = document.getElementById('ink');
+
+  function moveInk(btn){
+    const rect = btn.getBoundingClientRect();
+    const parent = btn.parentElement.getBoundingClientRect();
+    ink.style.left = (rect.left - parent.left) + 'px';
+    ink.style.width = rect.width + 'px';
+    ink.style.opacity = '1';
+  }
+  function selectTab(idx){
+    tabs.forEach((b,i)=>{
+      const sel = i===idx;
+      b.setAttribute('aria-selected', sel ? 'true':'false');
+      panes[i].classList.toggle('active', sel);
+    });
+    moveInk(tabs[idx]);
+    // Enfocar iframe para permitir scroll inmediato con rueda/táctil
+    const frame = panes[idx].querySelector('iframe');
+    if(frame) frame.focus({preventScroll:true});
+    // Ajustar altura al cambiar
+    resizeFrame(frame);
+  }
+
+  tabs.forEach((b,i)=>{
+    b.addEventListener('click', ()=> selectTab(i));
+    b.addEventListener('keydown', (e)=>{
+      if(e.key==='ArrowRight') selectTab((i+1)%tabs.length);
+      if(e.key==='ArrowLeft')  selectTab((i-1+tabs.length)%tabs.length);
+    });
+  });
+
+  // Posicionar la "ink" al iniciar
+  window.addEventListener('load', ()=> moveInk(tabs[0]));
+  window.addEventListener('resize', ()=> {
+    const current = tabs.findIndex(b => b.getAttribute('aria-selected')==='true');
+    if(current>=0) moveInk(tabs[current]);
+  });
+
+  // Auto-ajuste de altura de iframes (mismo origen)
+  function resizeFrame(frame){
+    if(!frame) return;
+    try{
+      const doc = frame.contentDocument || frame.contentWindow?.document;
+      const h = Math.max(
+        doc?.body?.scrollHeight||0,
+        doc?.documentElement?.scrollHeight||0,
+        720
+      );
+      frame.style.height = Math.min(h, 1400) + 'px';
+    }catch(e){
+      // Si es cross-origin, dejamos altura por defecto
+    }
+  }
+
+  // Marcar carga y ajustar altura
+  document.querySelectorAll('iframe').forEach((fr, idx)=>{
+    fr.addEventListener('load', ()=>{
+      document.getElementById('load'+(idx+1)).classList.add('hide');
+      resizeFrame(fr);
+      // Pequeño “follow-up” por si el contenido crece dinámicamente
+      let t = 0;
+      const tick = setInterval(()=>{ resizeFrame(fr); if(++t>8) clearInterval(tick); }, 400);
+    }, {once:false});
+  });
+</script>
+</body>
+</html>
